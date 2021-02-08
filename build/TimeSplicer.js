@@ -338,6 +338,34 @@
         timeField.text = timeToCurrentFormat(currentFormatToTime(timeField.text, fps, isDuration), fps, isDuration);
     }
 
+    function timeRemap() {
+        var activeComp = getActiveComp();
+        try {
+            var selectedLayers = getSelectedLayers(activeComp);
+            app.beginUndoGroup("Time Remap Toggled");
+            for (var _i = 0, selectedLayers_1 = selectedLayers; _i < selectedLayers_1.length; _i++) {
+                var selectedLayer = selectedLayers_1[_i];
+                if (selectedLayer instanceof AVLayer &&
+                    selectedLayer.canSetTimeRemapEnabled) {
+                    selectedLayer.timeRemapEnabled = !selectedLayer.timeRemapEnabled;
+                    if (selectedLayer.timeRemapEnabled &&
+                        selectedLayer.source instanceof CompItem) {
+                        var timeRemap_1 = selectedLayer.property("Time Remap");
+                        var isDuration = true;
+                        var time = timeRemap_1.keyTime(timeRemap_1.numKeys) -
+                            currentFormatToTime("1", getFps(), isDuration);
+                        timeRemap_1.addKey(time);
+                        timeRemap_1.removeKey(timeRemap_1.numKeys);
+                    }
+                }
+            }
+            app.endUndoGroup();
+        }
+        catch (e) {
+            reportError(e, "[qo7ur9] An error occurred. Please undo.");
+        }
+    }
+
     var window = new Window("palette", "Time splicer", undefined, {
     // resizeable: true,
     });
@@ -365,6 +393,9 @@
     groupIntoCompButton.onClick = groupIntoComp;
     var breakCompApartButton = window.add("button", undefined, "Break composition apart");
     breakCompApartButton.onClick = breakCompApart;
+    var timeRemapButton = window.add("button", undefined, "T");
+    timeRemapButton.maximumSize = [25, 999];
+    timeRemapButton.onClick = timeRemap;
     window.show();
 
 }());

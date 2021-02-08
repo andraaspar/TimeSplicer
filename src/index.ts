@@ -5,6 +5,7 @@ import { fitComp } from "./fun/fitComp";
 import { getTime } from "./fun/getTime";
 import { groupIntoComp } from "./fun/groupIntoComp";
 import { onTimeFieldChanged } from "./fun/onTimeFieldChanged";
+import { timeRemap } from "./fun/timeRemap";
 import { setTimeField } from "./model/timeField";
 
 const window = new Window("palette", "Time splicer", undefined, {
@@ -45,5 +46,9 @@ const breakCompApartButton = window.add(
   "Break composition apart"
 );
 breakCompApartButton.onClick = breakCompApart;
+
+const timeRemapButton = window.add("button", undefined, "T");
+timeRemapButton.maximumSize = [25, 999];
+timeRemapButton.onClick = timeRemap;
 
 window.show();
